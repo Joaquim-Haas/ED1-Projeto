@@ -1,12 +1,12 @@
 #ifndef OPERACOES_H
 #define OPERACOES_H
 
-#include "urbano.h" // Necessário porque Chamado se conecta com Sensor
+#include "urbano.h" 
 
 typedef struct Equipe {
     int id;
     char nome[50];
-    char especialidade[30]; // Ex: "Eletrica", "Hidraulica", "TI"
+    char especialidade[30]; 
     struct Equipe *prox;
     struct Equipe *ant;
 } TEquipe;
