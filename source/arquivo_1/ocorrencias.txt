@@ -1,0 +1,5 @@
+5001 4 1 102 1 Nivel_agua_critico
+5002 3 2 103 2 Possivel_incendio
+5003 2 1 104 3 Fluxo_intenso
+5004 1 3 101 1 Temperatura_normalizada
+5005 4 1 105 4 Falha_energia

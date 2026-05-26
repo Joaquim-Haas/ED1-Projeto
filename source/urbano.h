@@ -5,33 +5,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Ocorrencia {
-    int id;
+typedef struct ocorrencia {
+    int codigo;
+    int severidade;
     char descricao[100];
-    char gravidade[20]; 
-    char dataHora[20];  
-    struct Ocorrencia *prox;
-    struct Ocorrencia *ant;
-} TOcorrencia;
+    int status;
+    struct ocorrencia *prox;
+} Ocorrencia;
 
-typedef struct Sensor {
-    int id;
-    char tipo[30];      
-    char status[15];    
-    TOcorrencia *listaOcorrencias; 
-    struct Sensor *prox;
-    struct Sensor *ant;
-} TSensor;
+typedef struct sensor {
+    int codigo;
+    int tipo;
+    int status;
+    Ocorrencia *listaOcorrencias;
+    struct sensor *prox;
+} Sensor;
 
-typedef struct Bairro {
-    int id;
+typedef struct bairro {
+    int codigo;
     char nome[50];
-    TSensor *listaSensores; /
-    struct Bairro *prox;
-    struct Bairro *ant;
-} TBairro;
+    Sensor *listaSensores;
+    struct bairro *prox;
+} Bairro;
 
-void cadastrarBairro(TBairro **topo, int id, char *nome);
-void cadastrarSensor(TBairro *listaBairros, int idBairro, int idSensor, char *tipo);
+Ocorrencia *alocarOcorrencia();
+Sensor *alocarSensor();
+Bairro *alocarBairro();
+
+void cadastrarBairro(Bairro **lista, int codBairro, char *Nome);
+void cadastrarSensor(Bairro *listaBairros, int codBairro, int codSensor, char *tipo);
+void cadastrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia, int severidade, char *descricao);
 
 #endif

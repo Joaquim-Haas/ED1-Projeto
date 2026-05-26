@@ -3,22 +3,22 @@
 
 #include "urbano.h" 
 
-typedef struct Equipe {
-    int id;
-    char nome[50];
-    char especialidade[30]; 
-    struct Equipe *prox;
-    struct Equipe *ant;
-} TEquipe;
+typedef struct chamado{
+    int codigo;
+    int prioridade;
+    int status;
+    Ocorrencia *ocorrencia; //verifique se vai precisar
+    struct chamado *prox;
+}Chamado;
 
-typedef struct Chamado {
-    int id;
-    int idSensor;     
-    int idEquipe;     
-    char status[20];  
-    struct Chamado *prox;
-    struct Chamado *ant;
-} TChamado;
+typedef struct equipe{
+    int codigo;
+    char nome[50];
+    char especialidade[30];
+    int total_atendimentos;
+    Chamado *listaChamados;
+    struct equipe *prox;
+}Equipe;
 
 void cadastrarEquipe(TEquipe **topo, int id, char *nome, char *especialidade);
 

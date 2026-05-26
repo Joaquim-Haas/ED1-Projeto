@@ -1,0 +1,29 @@
+cadastrarBairro 10 Contorno
+cadastrarBairro 11 Nova_Russia
+
+cadastrarSensor 200 2 1 10
+cadastrarSensor 201 3 1 10
+cadastrarSensor 202 4 1 11
+cadastrarSensor 203 5 2 11
+
+cadastrarEquipe 10 Equipe_Extra 2
+
+registrarOcorrencia 9001 4 1 200 10 Nivel_agua_critico
+registrarOcorrencia 9002 3 1 201 10 Possivel_incendio
+registrarOcorrencia 9003 2 1 202 11 Fluxo_intenso
+
+alterarStatusSensor 200 10 3
+
+gerarChamado 8001 9001 4 1
+gerarChamado 8002 9002 3 1
+
+associarEquipe 8001 10
+
+listarSensoresBairro 10
+listarOcorrencias
+
+finalizarChamado 8001
+
+relatorioGeral
+
+FIM

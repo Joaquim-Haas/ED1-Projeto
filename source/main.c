@@ -7,8 +7,9 @@
 #include "simulador.h"
 
 int main(){
-    TBairro *listaBairros = NULL;
-    TEquipe *listaEquipes = NULL;
-    TChamado *listaChamados = NULL;
+    Bairro *listaBairros = NULL;
+    Equipe *listaEquipes = NULL;
+    Chamado *listaChamados = NULL;
 
+    
 }
