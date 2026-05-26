@@ -28,12 +28,20 @@ typedef struct bairro {
     struct bairro *prox;
 } Bairro;
 
-Ocorrencia *alocarOcorrencia();
-Sensor *alocarSensor();
-Bairro *alocarBairro();
+Bairro *alocarBairro(int codBairro, char *nomeBairro); //ok
+Sensor *alocarSensor(int codSensor, int tipoSensor, int statusSensor); //ok
+Ocorrencia *alocarOcorrencia(int codOcorrencia, int severidade, char *descricao, int statusOcorrencia); //ok
 
-void cadastrarBairro(Bairro **lista, int codBairro, char *Nome);
-void cadastrarSensor(Bairro *listaBairros, int codBairro, int codSensor, char *tipo);
+void cadastrarBairro(Bairro **listaBairros, int codBairro, char *Nome); //ok
+void cadastrarSensor(Bairro *listaBairros, int codBairro, int codSensor, int tipo);
 void cadastrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia, int severidade, char *descricao);
+
+void imprimirBairros(Bairro *listaBairros); //ok
+void imprimirSensores(Bairro *bairroEspecif);
+void imprimirOcorrencias(Sensor *sensorEspecif);
+
+Bairro *buscarBairro(Bairro *listaBairros, int codBairro); //ok
+Sensor *buscarSensor(Bairro *listaBairros, int codBairro, int codSensor); //ok
+Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor int codOcorrencia); //ok
 
 #endif
