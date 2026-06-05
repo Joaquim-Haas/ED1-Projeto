@@ -61,8 +61,13 @@ Bairro *alocarBairro(int codBairro, char *nomeBairro){
 }
 
 void cadastrarBairro(Bairro **lista, int codBairro, char *Nome){
+    if(buscarBairro(*lista, codBairro) != NULL){
+        printf("Erro: Ja existe um bairro cadastrado com o codigo [%d]. . .\n", codBairro);
+        return;
+    }
+
     Bairro *novo = NULL;
-    novo = alocarBairro(int codBairro, Nome);
+    novo = alocarBairro(codBairro, Nome);
 
     if(novo == NULL){
         printf("Falhou ao alocar memoria para Bairro. . .\n");
@@ -71,10 +76,10 @@ void cadastrarBairro(Bairro **lista, int codBairro, char *Nome){
     if(*lista == NULL){
         novo->prox = novo;  //novo->prox aponta para si mesmo
         *lista = novo;  
-    }                                //(*lista) sempre e o ultimo elemento da lista
+    }                               
     else{                            //novo->prox = (*lista)->prox; o novo aponta para o atual primeiro
         novo->prox = (*lista)->prox; //(*lista)->prox = novo; o ultimo aponta para o novo que vira o primeiro
-        (*lista)->prox = novo;       //novo entra sempre no início pois é quem o ultimo (*lista) aponta
+        (*lista)->prox = novo;       
     }
 }
 
@@ -88,7 +93,7 @@ void cadastrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int
 
 void imprimirBairros(Bairro *lista){
     if(lista == NULL){
-        printf("Lista vazia, nao ha nenhum bairro para imprimir. . .\n");
+        printf("Nao ha nenhum bairro para imprimir. . .\n");
         return;
     }
 
@@ -96,33 +101,55 @@ void imprimirBairros(Bairro *lista){
     printf("\n-Imprimindo Bairros-\n");
 
     do{
-        printf("Bairro: %s - Codigo: %d\n", aux->nome, aux->codigo);
+        printf("Bairro: [%s] - Codigo: [%d]\n", aux->nome, aux->codigo);
         aux = aux->prox;
     }while(aux != lista->prox);
 }   
 
 void imprimirSensores(Bairro *bairroEspecif){
+    if(bairroEspecif == NULL){
+        printf("Bairro vazio ou nao especificado exatamente. . .\n");
+        return;
+    }
 
+    Sensor *aux = bairroEspecif->listaSensores->prox;
+    printf("\n-Imprimindo sensores do Bairro %s-\n", bairroEspecif->nome);
+
+    do{
+        printf("Sensor ID: [%d] - Tipo: [%d] - Status: [%d]\n", aux->codigo, aux->tipo, aux->status);
+        aux = aux->prox;
+    }while(aux != bairroEspecif->listaSensores->prox);
 }
 
 void imprimirOcorrencias(Sensor *sensorEspecif){
+    if(sensorEspecif == NULL){
+        printf("Sensor vazio ou nao especificado exatamente. . .\n");
+        return;
+    }
 
+    Ocorrencia *aux = sensorEspecif->listaOcorrencias->prox;
+    printf("\n-Imprimindo Ocorrencias do Sensor %d-\n", sensorEspecif->codigo);
+
+    do{
+        print("Ocorrencia ID: [%d] - Severidade [%d] - Status - [%d] - Descricao [%s]\n", aux->codigo, aux->severidade, aux->status, aux->descricao);
+        aux = aux->prox;
+    }while(aux != sensorEspecif->listaOcorrencias->prox);
 }
 
 Bairro *buscarBairro(Bairro *listaBairros, int codBairro){
     if(listaBairros == NULL){
         printf("Lista de bairro vazia. . .\n");
-        return;
+        return NULL;
     }
 
     Bairro *aux = listaBairros->prox; //aux vira o primeiro no
 
     do{
         if(aux->codigo == codBairro){
-            return aux; //se achar o no, retorna o proprio no. se nao retorna NULL
+            return aux; 
         }
         aux = aux->prox;
-    }while(aux != listaBairros->prox)
+    }while(aux != listaBairros->prox);
 
     return NULL;
 }   
@@ -130,7 +157,7 @@ Bairro *buscarBairro(Bairro *listaBairros, int codBairro){
 Sensor *buscarSensor(Bairro *listaBairros, int codBairro, int codSensor){
     if(listaBairros == NULL){
         printf("Lista de bairro vazia. . .\n");
-        return;
+        return NULL;
     }
 
     Bairro *bairroAchado = buscarBairro(listaBairros, codBairro);
@@ -153,7 +180,7 @@ Sensor *buscarSensor(Bairro *listaBairros, int codBairro, int codSensor){
 Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor int codOcorrencia){
     if(listaBairros == NULL){
         printf("Lista de bairro vazia. . .\n");
-        return;
+        return NULL;
     }
 
     Sensor *sensorAchado = buscarSensor(listaBairros, codBairro, codSensor);
