@@ -20,6 +20,6 @@ typedef struct equipe{
     struct equipe *prox;
 }Equipe;
 
-void cadastrarEquipe(TEquipe **topo, int id, char *nome, char *especialidade);
+void cadastrarEquipe(Equipe **topo, int id, char *nome, char *especialidade);
 
 #endif

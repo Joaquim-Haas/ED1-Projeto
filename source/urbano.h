@@ -33,15 +33,20 @@ Sensor *alocarSensor(int codSensor, int tipoSensor, int statusSensor); //ok
 Ocorrencia *alocarOcorrencia(int codOcorrencia, int severidade, char *descricao, int statusOcorrencia); //ok
 
 void cadastrarBairro(Bairro **listaBairros, int codBairro, char *Nome); //ok
-void cadastrarSensor(Bairro *listaBairros, int codBairro, int codSensor, int tipo);
-void cadastrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia, int severidade, char *descricao);
+void cadastrarSensor(Bairro *listaBairros, int codBairro, int codSensor, int tipo); //ok
+void cadastrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia, int severidade, char *descricao); //ok
 
 void imprimirBairros(Bairro *listaBairros); //ok
-void imprimirSensores(Bairro *bairroEspecif);
-void imprimirOcorrencias(Sensor *sensorEspecif);
+void imprimirSensores(Bairro *bairroEspecif); //ok
+void imprimirOcorrencias(Sensor *sensorEspecif); //ok
 
 Bairro *buscarBairro(Bairro *listaBairros, int codBairro); //ok
 Sensor *buscarSensor(Bairro *listaBairros, int codBairro, int codSensor); //ok
-Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor int codOcorrencia); //ok
+Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia); //ok
+
+void removerBairro(Bairro **listaBairros, int codBairro); //ok
+void liberarBairro(Bairro **listaBairros); //ok
+void liberarOcorrencias(Ocorrencia **listaOcorr); //ok
+void liberarSensores(Sensor **listaSensores); //ok
 
 #endif
