@@ -222,6 +222,8 @@ Sensor *buscarSensor(Bairro *listaBairros, int codBairro, int codSensor){
         }
         aux = aux->prox;
     }while(aux != bairroAchado->listaSensores->prox);
+
+    return NULL;
 }
 
 Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia){
@@ -245,6 +247,8 @@ Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor,
         }
         aux = aux->prox;
     }while(aux != sensorAchado->listaOcorrencias->prox);
+
+    return NULL;
 }
 
 void removerBairro(Bairro **listaBairros, int codBairro){
@@ -277,12 +281,12 @@ void removerBairro(Bairro **listaBairros, int codBairro){
     }
     
     if(aux == ant){
-        *listaBairros == NULL; //unico elemento da lista
+        *listaBairros = NULL; //unico elemento da lista
     }
     else{
         ant->prox = aux->prox; //ant aponta para o seguinte de aux
         if(aux == *listaBairros){ //se aux for o ultimo elemento
-            *listaBairros == ant;
+            *listaBairros = ant;
         }
     }
 
