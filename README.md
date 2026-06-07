@@ -15,5 +15,5 @@ Você pode baixar o código fonte ou clonar o repositório:
 
 ### Clonando via Terminal
 ```bash
-git clone [https://github.com/Joaquim-Haas/ED1-Projeto.git](https://github.com/Joaquim-Haas/Sistema-Biblioteca.git)
+git clone [https://github.com/Joaquim-Haas/ED1-Projeto.git](https://github.com/Joaquim-Haas/ED1-Projeto.git)
 ```
