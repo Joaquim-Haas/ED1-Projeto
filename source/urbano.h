@@ -28,21 +28,21 @@ typedef struct bairro {
     struct bairro *prox;
 } Bairro;
 
-Bairro *alocarBairro(int codBairro, char *nomeBairro); //ok
-Sensor *alocarSensor(int codSensor, int tipoSensor, int statusSensor); //ok
-Ocorrencia *alocarOcorrencia(int codOcorrencia, int severidade, char *descricao, int statusOcorrencia); //ok
+Bairro *alocarBairro(int codBairro, char *nomeBairro);
+Sensor *alocarSensor(int codSensor, int tipoSensor, int statusSensor);
+Ocorrencia *alocarOcorrencia(int codOcorrencia, int severidade, char *descricao, int statusOcorrencia);
 
-void cadastrarBairro(Bairro **listaBairros, int codBairro, char *Nome); //ok
-void cadastrarSensor(Bairro *listaBairros, int codBairro, int codSensor, int tipo); //ok
-void registrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia, int severidade, char *descricao); //ok
+void cadastrarBairro(Bairro **listaBairros, int codBairro, char *Nome);
+void cadastrarSensor(Bairro *listaBairros, int codBairro, int codSensor, int tipo);
+void registrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia, int severidade, char *descricao);
 
-void listarBairros(Bairro *listaBairros); //ok
-void listarSensoresBairro(Bairro *bairroEspecif); //ok
-void listarOcorrencias(Sensor *sensorEspecif); //ok
+void listarBairros(Bairro *listaBairros);
+void listarSensoresBairro(Bairro *bairroEspecif);
+void listarOcorrencias(Sensor *sensorEspecif);
 
-Bairro *buscarBairro(Bairro *listaBairros, int codBairro); //ok
-Sensor *buscarSensor(Bairro *listaBairros, int codBairro, int codSensor); //ok
-Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia); //ok
+Bairro *buscarBairro(Bairro *listaBairros, int codBairro);
+Sensor *buscarSensor(Bairro *listaBairros, int codBairro, int codSensor);
+Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia);
 Ocorrencia *buscarOcorrenciaPorCodigo(Bairro *listaBairros, int codOcorrencia);
 
 int alterarStatusSensor(Bairro *listaBairros, int codSensor, int codBairro, int novoStatus);
@@ -55,9 +55,9 @@ void carregarBairrosArquivo(Bairro **listaBairros);
 void carregarSensoresArquivo(Bairro *listaBairros);
 void carregarOcorrenciasArquivo(Bairro *listaBairros);
 
-void removerBairro(Bairro **listaBairros, int codBairro); //ok
-void liberarBairro(Bairro **listaBairros); //ok
-void liberarOcorrencias(Ocorrencia **listaOcorr); //ok
-void liberarSensores(Sensor **listaSensores); //ok
+void removerBairro(Bairro **listaBairros, int codBairro);
+void liberarBairro(Bairro **listaBairros);
+void liberarOcorrencias(Ocorrencia **listaOcorr);
+void liberarSensores(Sensor **listaSensores);
 
 #endif
