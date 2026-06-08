@@ -29,6 +29,7 @@ int main(void) {
         verificarConsistenciaDados(listaBairros, listaEquipes, listaChamados);
         salvarDadosNosArquivos(listaBairros, listaEquipes, listaChamados);
     } else if (modo == 2) {
+        registrarLog("INICIO - Sessao em Modo Menu Manual iniciada", "INFO");
         exibirMenuInterativo(&listaBairros, &listaEquipes, &listaChamados);
     } else {
         printf("Opcao invalida. Encerrando programa.\n");

@@ -1,5 +1,5 @@
 #include "menu.h"
-
+#include "simulador.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -30,20 +30,46 @@ static void menuBairros(Bairro **listaB) {
         if (opcao == 1) {
             int codigo;
             char nome[50];
+            int erro = 0;
             printf("Codigo do bairro: ");
             scanf("%d", &codigo);
             printf("Nome do bairro: ");
             scanf("%49s", nome);
             limparBuffer();
+            
+            // Pré-checagem de erro
+            if (*listaB != NULL && buscarBairro(*listaB, codigo) != NULL) erro = 1;
+            
             cadastrarBairro(listaB, codigo, nome);
+            
+            if (erro) registrarLog("Operacao Manual: Cadastro Bairro - Falha (ID Duplicado)", "ERRO");
+            else registrarLog("Operacao Manual: Cadastro Bairro", "SUCESSO");
+
         } else if (opcao == 2) {
+            if (*listaB == NULL) registrarLog("Operacao Manual: Listar Bairros - Falha (Lista Vazia)", "ERRO");
+            else registrarLog("Operacao Manual: Listar Bairros", "SUCESSO");
+            
             listarBairros(*listaB);
+            
         } else if (opcao == 3) {
             int codigo;
+            int erro = 0;
+            Bairro *b = NULL;
             printf("Codigo do bairro a remover: ");
             scanf("%d", &codigo);
             limparBuffer();
+            
+            // Pré-checagem de erro
+            if (*listaB != NULL) b = buscarBairro(*listaB, codigo);
+            if (b == NULL) erro = 1;
+            else if (b->listaSensores != NULL) erro = 2;
+
             removerBairro(listaB, codigo);
+            
+            if (erro == 1) registrarLog("Operacao Manual: Remocao Bairro - Falha (Nao encontrado)", "ERRO");
+            else if (erro == 2) registrarLog("Operacao Manual: Remocao Bairro - Falha (Possui sensores)", "ERRO");
+            else registrarLog("Operacao Manual: Remocao Bairro", "SUCESSO");
+
         } else if (opcao != 0) {
             printf("Opcao invalida!\n");
         }
@@ -65,6 +91,7 @@ static void menuSensores(Bairro *listaB, Equipe *listaE, Chamado **listaC) {
 
         if (opcao == 1) {
             int codBairro, codSensor, tipo;
+            int erro = 0;
             printf("Codigo do bairro: ");
             scanf("%d", &codBairro);
             printf("Codigo do sensor: ");
@@ -72,7 +99,15 @@ static void menuSensores(Bairro *listaB, Equipe *listaE, Chamado **listaC) {
             printf("Tipo do sensor: ");
             scanf("%d", &tipo);
             limparBuffer();
+            
+            // Pré-checagem
+            if (listaB == NULL || buscarBairro(listaB, codBairro) == NULL) erro = 1;
+
             cadastrarSensor(listaB, codBairro, codSensor, tipo);
+            
+            if (erro) registrarLog("Operacao Manual: Cadastro Sensor - Falha (Bairro inexistente)", "ERRO");
+            else registrarLog("Operacao Manual: Cadastro Sensor", "SUCESSO");
+
         } else if (opcao == 2) {
             int codBairro;
             Bairro *bairro;
@@ -82,9 +117,12 @@ static void menuSensores(Bairro *listaB, Equipe *listaE, Chamado **listaC) {
             bairro = buscarBairro(listaB, codBairro);
             if (bairro == NULL || bairro->listaSensores == NULL) {
                 printf("ERRO: Bairro inexistente ou sem sensores cadastrados.\n");
+                registrarLog("Operacao Manual: Listar Sensores - Falha (Bairro/Sensores inexistentes)", "ERRO");
             } else {
                 listarSensoresBairro(bairro);
+                registrarLog("Operacao Manual: Listar Sensores", "SUCESSO");
             }
+            
         } else if (opcao == 3) {
             int codBairro, codSensor, novoStatus;
             Sensor *sensor;
@@ -95,9 +133,13 @@ static void menuSensores(Bairro *listaB, Equipe *listaE, Chamado **listaC) {
             printf("Novo status (1=online, 0=offline): ");
             scanf("%d", &novoStatus);
             limparBuffer();
+            
             if (alterarStatusSensor(listaB, codSensor, codBairro, novoStatus)) {
                 sensor = buscarSensor(listaB, codBairro, codSensor);
                 verificarGeracaoAutomatica(listaB, listaE, listaC, sensor, NULL);
+                registrarLog("Operacao Manual: Alteracao de Status de Sensor", "SUCESSO");
+            } else {
+                registrarLog("Operacao Manual: Alteracao de Status - Falha (Sensor/Bairro invalido)", "ERRO");
             }
         } else if (opcao != 0) {
             printf("Opcao invalida!\n");
@@ -108,6 +150,7 @@ static void menuSensores(Bairro *listaB, Equipe *listaE, Chamado **listaC) {
 static void registrarOcorrenciaManual(Bairro *listaB, Equipe *listaE, Chamado **listaC) {
     int codBairro, codSensor, codOcorr, severidade;
     char descricao[100];
+    int erro = 0;
     Ocorrencia *ocorrencia;
     Sensor *sensor;
 
@@ -124,11 +167,19 @@ static void registrarOcorrenciaManual(Bairro *listaB, Equipe *listaE, Chamado **
     scanf("%99s", descricao);
     limparBuffer();
 
+    if (listaB == NULL || buscarSensor(listaB, codBairro, codSensor) == NULL) erro = 1;
+
     registrarOcorrencia(listaB, codBairro, codSensor, codOcorr, severidade, descricao);
-    ocorrencia = buscarOcorrencia(listaB, codBairro, codSensor, codOcorr);
-    sensor = buscarSensor(listaB, codBairro, codSensor);
-    if (ocorrencia != NULL) {
-        verificarGeracaoAutomatica(listaB, listaE, listaC, sensor, ocorrencia);
+    
+    if (erro) {
+        registrarLog("Operacao Manual: Registro Ocorrencia - Falha (Sensor/Bairro inexistente)", "ERRO");
+    } else {
+        ocorrencia = buscarOcorrencia(listaB, codBairro, codSensor, codOcorr);
+        sensor = buscarSensor(listaB, codBairro, codSensor);
+        if (ocorrencia != NULL) {
+            verificarGeracaoAutomatica(listaB, listaE, listaC, sensor, ocorrencia);
+            registrarLog("Operacao Manual: Registro Ocorrencia", "SUCESSO");
+        }
     }
 }
 
@@ -166,6 +217,9 @@ static void listarChamadosPendentes(Chamado *listaC, Equipe *listaE) {
 
     if (!encontrou) {
         printf("Nenhum chamado cadastrado.\n");
+        registrarLog("Operacao Manual: Listar Chamados - Falha (Nenhum cadastrado)", "ERRO");
+    } else {
+        registrarLog("Operacao Manual: Listar Chamados", "SUCESSO");
     }
 }
 
@@ -189,6 +243,7 @@ static void menuEquipesChamados(Bairro *listaB, Equipe **listaE, Chamado **lista
         if (opcao == 1) {
             int id;
             char nome[50], especialidade[30];
+            int erro = 0;
             printf("Codigo da equipe: ");
             scanf("%d", &id);
             printf("Nome: ");
@@ -196,15 +251,33 @@ static void menuEquipesChamados(Bairro *listaB, Equipe **listaE, Chamado **lista
             printf("Especialidade (tipo de sensor): ");
             scanf("%29s", especialidade);
             limparBuffer();
+            
+            if (*listaE != NULL && buscarEquipe(*listaE, id) != NULL) erro = 1;
+            
             cadastrarEquipe(listaE, id, nome, especialidade);
+            
+            if (erro) registrarLog("Operacao Manual: Cadastro Equipe - Falha (ID Duplicado)", "ERRO");
+            else registrarLog("Operacao Manual: Cadastro Equipe", "SUCESSO");
+
         } else if (opcao == 2) {
+            if (*listaE == NULL) registrarLog("Operacao Manual: Listar Equipes - Falha (Vazio)", "ERRO");
+            else registrarLog("Operacao Manual: Listar Equipes", "SUCESSO");
             listarEquipes(*listaE);
+            
         } else if (opcao == 3) {
             int id;
+            int erro = 0;
             printf("Codigo da equipe a remover: ");
             scanf("%d", &id);
             limparBuffer();
+            
+            if (*listaE == NULL || buscarEquipe(*listaE, id) == NULL) erro = 1;
+            
             removerEquipe(listaE, id);
+            
+            if (erro) registrarLog("Operacao Manual: Remover Equipe - Falha (Nao encontrada)", "ERRO");
+            else registrarLog("Operacao Manual: Remover Equipe", "SUCESSO");
+
         } else if (opcao == 4) {
             int codChamado, codOcorr, prioridade, status;
             printf("Codigo do chamado: ");
@@ -216,7 +289,11 @@ static void menuEquipesChamados(Bairro *listaB, Equipe **listaE, Chamado **lista
             printf("Status: ");
             scanf("%d", &status);
             limparBuffer();
-            gerarChamado(listaC, listaB, codChamado, codOcorr, prioridade, status);
+            if(gerarChamado(listaC, listaB, codChamado, codOcorr, prioridade, status)) {
+                registrarLog("Operacao Manual: Gerar Chamado", "SUCESSO");
+            } else {
+                registrarLog("Operacao Manual: Gerar Chamado - Falha (Invalido ou Duplicado)", "ERRO");
+            }
         } else if (opcao == 5) {
             int codChamado, codEquipe;
             printf("Codigo do chamado: ");
@@ -224,13 +301,21 @@ static void menuEquipesChamados(Bairro *listaB, Equipe **listaE, Chamado **lista
             printf("Codigo da equipe: ");
             scanf("%d", &codEquipe);
             limparBuffer();
-            associarChamadoEquipe(*listaE, codChamado, codEquipe, listaC);
+            if(associarChamadoEquipe(*listaE, codChamado, codEquipe, listaC)) {
+                registrarLog("Operacao Manual: Associar Chamado", "SUCESSO");
+            } else {
+                registrarLog("Operacao Manual: Associar Chamado - Falha", "ERRO");
+            }
         } else if (opcao == 6) {
             int codChamado;
             printf("Codigo do chamado a finalizar: ");
             scanf("%d", &codChamado);
             limparBuffer();
-            finalizarChamado(*listaC, *listaE, codChamado);
+            if(finalizarChamado(*listaC, *listaE, codChamado)) {
+                registrarLog("Operacao Manual: Finalizar Chamado", "SUCESSO");
+            } else {
+                registrarLog("Operacao Manual: Finalizar Chamado - Falha", "ERRO");
+            }
         } else if (opcao == 7) {
             listarChamadosPendentes(*listaC, *listaE);
         } else if (opcao != 0) {
@@ -269,6 +354,7 @@ static void menuRelatorios(Bairro *listaB, Equipe *listaE, Chamado *listaC) {
         }
 
         if (opcao != 0) {
+            registrarLog("Operacao Manual: Visualizar Relatorio", "INFO");
             pausar();
         }
     }
@@ -326,11 +412,13 @@ void exibirMenuInterativo(Bairro **listaB, Equipe **listaE, Chamado **listaC) {
                 printf("\n--- Carregando dados dos arquivos .txt ---\n");
                 carregarDadosIniciais(listaB, listaE, listaC); 
                 printf("\nDados carregados com sucesso!\n");
+                registrarLog("Operacao Manual: Carga Inicial de Arquivos", "SUCESSO");
                 pausar(); 
                 break;
             case 0:
                 printf("Salvando dados e encerrando...\n");
                 salvarDadosNosArquivos(*listaB, *listaE, *listaC);
+                registrarLog("FIM - Sessao Manual Encerrada", "INFO");
                 break;
             default:
                 printf("Opcao invalida!\n");

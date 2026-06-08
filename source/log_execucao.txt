@@ -1,0 +1,20 @@
+[08/06/2026 19:36:20] [INFO] INICIO - Sessao em Modo Menu Manual iniciada
+[08/06/2026 19:36:23] [SUCESSO] Operacao: Carga Inicial de Arquivos Manual
+[08/06/2026 19:36:31] [INFO] Operacao: Visualizar Relatorio Manual
+[08/06/2026 19:36:35] [INFO] Operacao: Visualizar Relatorio Manual
+[08/06/2026 19:36:37] [INFO] Operacao: Visualizar Relatorio Manual
+[08/06/2026 19:36:38] [INFO] Operacao: Visualizar Relatorio Manual
+[08/06/2026 19:36:40] [INFO] Operacao: Visualizar Relatorio Manual
+[08/06/2026 19:37:20] [INFO] FIM - Sessao Manual Encerrada
+[08/06/2026 19:42:48] [INFO] INICIO - Sessao em Modo Menu Manual iniciada
+[08/06/2026 19:42:50] [SUCESSO] Operacao Manual: Carga Inicial de Arquivos
+[08/06/2026 19:43:04] [ERRO] Operacao Manual: Cadastro Sensor - Falha (Bairro inexistente)
+[08/06/2026 19:43:12] [INFO] Operacao Manual: Visualizar Relatorio
+[08/06/2026 19:43:15] [INFO] Operacao Manual: Visualizar Relatorio
+[08/06/2026 19:43:22] [SUCESSO] Operacao Manual: Listar Bairros
+[08/06/2026 19:43:24] [SUCESSO] Operacao Manual: Listar Bairros
+[08/06/2026 19:43:27] [SUCESSO] Operacao Manual: Cadastro Bairro
+[08/06/2026 19:43:33] [SUCESSO] Operacao Manual: Remocao Bairro
+[08/06/2026 19:43:36] [SUCESSO] Operacao Manual: Listar Bairros
+[08/06/2026 19:43:42] [ERRO] Operacao Manual: Remocao Bairro - Falha (Nao encontrado)
+[08/06/2026 19:43:47] [INFO] FIM - Sessao Manual Encerrada
