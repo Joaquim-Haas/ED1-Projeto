@@ -111,7 +111,7 @@ void cadastrarSensor(Bairro *listaBairros, int codBairro, int codSensor, int tip
     printf("Sensor [%d] cadastrado com sucesso no bairro [%s]. . .\n", codSensor, bairroAchado->nome);
 }
 
-void cadastrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia, int severidade, char *descricao){
+void registrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia, int severidade, char *descricao){
     Sensor *sensorAchado = buscarSensor(listaBairros, codBairro, codSensor);
 
     if(sensorAchado == NULL){
@@ -138,7 +138,7 @@ void cadastrarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int
     printf("Ocorrencia [%d] vinculada com sucesso ao sensor [%d]. . .\n", codOcorrencia, codSensor);  
 }
 
-void imprimirBairros(Bairro *lista){
+void listarBairros(Bairro *lista){
     if(lista == NULL){
         printf("Nao ha nenhum bairro para imprimir. . .\n");
         return;
@@ -153,7 +153,7 @@ void imprimirBairros(Bairro *lista){
     }while(aux != lista->prox);
 }   
 
-void imprimirSensores(Bairro *bairroEspecif){
+void listarSensoresBairro(Bairro *bairroEspecif){
     if(bairroEspecif == NULL){
         printf("Bairro vazio ou nao especificado exatamente. . .\n");
         return;
@@ -168,7 +168,7 @@ void imprimirSensores(Bairro *bairroEspecif){
     }while(aux != bairroEspecif->listaSensores->prox);
 }
 
-void imprimirOcorrencias(Sensor *sensorEspecif){
+void listarOcorrencias(Sensor *sensorEspecif){
     if(sensorEspecif == NULL){
         printf("Sensor vazio ou nao especificado exatamente. . .\n");
         return;
@@ -249,6 +249,157 @@ Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor,
     }while(aux != sensorAchado->listaOcorrencias->prox);
 
     return NULL;
+=======
+}
+
+void salvarBairrosArquivo(Bairro *listaBairros){
+    if(listaBairros == NULL){
+        printf("Lista de bairros vazia, nada foi salvo em bairros.txt. . .\n");
+        return;
+    }
+
+    FILE *arq = fopen("bairros.txt", "w");
+    if(arq == NULL){
+        printf("ERRO: Arquivo bairros.txt erro ao abrir. . .\n");
+        return;
+    }
+
+    Bairro *aux = listaBairros->prox;
+
+    do{
+        //codigo nome
+        fprintf(arq, "%d %s\n", aux->codigo, aux->nome);
+        aux = aux->prox;
+    }while(aux != listaBairros->prox);
+
+    fclose(arq);
+}
+
+void salvarSensoresArquivo(Bairro *listaBairros){
+    if(listaBairros == NULL){
+        printf("Lista Bairros vazia, nenhum sensor salvo em sensores.txt. . .\n");
+        return;
+    }
+
+    FILE *arq = fopen("sensores.txt", "w");
+
+    if (arq == NULL) {
+        printf("ERRO: Arquivo sensores.txt erro ao abrir. . .\n");
+        return;
+    }
+
+    Bairro *auxBairro = listaBairros->prox;
+
+    do{
+        if(auxBairro->listaSensores != NULL){
+            Sensor *auxSensor = auxBairro->listaSensores->prox;
+            do{
+                //codigo tipo status codigo_bairro 
+                fprintf(arq, "%d %d %d %d\n", auxSensor->codigo, auxSensor->tipo, auxSensor->status, auxBairro->codigo);
+                auxSensor = auxSensor->prox;
+            }while (auxSensor != auxBairro->listaSensores->prox);
+        }
+        auxBairro = auxBairro->prox;
+    }while (auxBairro != listaBairros->prox);
+
+    fclose(arq);
+}
+
+void salvarOcorrenciasArquivo(Bairro *listaBairros){
+    if(listaBairros == NULL) {
+        printf("Lista Bairros vazia, nenhuma ocorrencia salva em ocorrencias.txt. . .\n");
+        return;
+    }
+
+    FILE *arq = fopen("ocorrencias.txt", "w");
+
+    if (arq == NULL) {
+        printf("ERRO: Arquivo ocorrencias.txt erro ao abrir. . .\n");
+        return;
+    }
+
+    Bairro *auxBairro = listaBairros->prox;
+
+    do{
+        if(auxBairro->listaSensores != NULL){
+            Sensor *auxSensor = auxBairro->listaSensores->prox;
+            do{
+                if (auxSensor->listaOcorrencias != NULL) {
+                    Ocorrencia *auxOcorr = auxSensor->listaOcorrencias->prox;
+                    do{
+                        //codigo severidade status codigo_sensor codigo_bairro descricao 
+                        fprintf(arq, "%d %d %d %d %d %s\n", 
+                                auxOcorr->codigo, auxOcorr->severidade, auxOcorr->status, 
+                                auxSensor->codigo, auxBairro->codigo, auxOcorr->descricao);
+                        auxOcorr = auxOcorr->prox;
+                    }while (auxOcorr != auxSensor->listaOcorrencias->prox);
+                }
+                auxSensor = auxSensor->prox;
+            }while (auxSensor != auxBairro->listaSensores->prox);
+        }
+        auxBairro = auxBairro->prox;
+    }while (auxBairro != listaBairros->prox);
+
+    fclose(arq);
+}
+
+void carregarBairrosArquivo(Bairro **listaBairros){
+    FILE *arq = fopen("bairros.txt", "r");
+    if(arq == NULL){
+        printf("ERRO: Nao foi possivel abrir o arquivo bairros.txt. . .\n"); 
+        return;
+    }
+
+    int codigo;
+    char nome[50];
+
+    while(fscanf(arq, "%d %s", &codigo, nome) == 2){
+        cadastrarBairro(listaBairros, codigo, nome);
+    }
+    fclose(arq);
+}
+
+void carregarSensoresArquivo(Bairro *listaBairros){
+    FILE *arq = fopen("sensores.txt", "r");
+    if(arq == NULL){
+        printf("ERRO: Nao foi possivel abrir o arquivo sensores.txt. . .\n"); 
+        return;
+    }
+
+    int codBairro, codSensor, tipo, status;
+
+    // Lendo na ordem: codigo tipo status codigo_bairro 
+    while(fscanf(arq, "%d %d %d %d", &codSensor, &tipo, &status, &codBairro) == 4) {
+        cadastrarSensor(listaBairros, codBairro, codSensor, tipo);
+        Sensor *s = buscarSensor(listaBairros, codBairro, codSensor);
+
+        if(s != NULL) {
+            s->status = status; // Restaura o status gravado no arquivo
+        }
+    }
+    fclose(arq);
+}
+
+void carregarOcorrenciasArquivo(Bairro *listaBairros){
+    FILE *arq = fopen("ocorrencias.txt", "r");
+    if(arq == NULL){
+        printf("ERRO: Nao foi possivel abrir o arquivo ocorrencias.txt. . .\n"); 
+        return;
+    }
+
+    int codBairro, codSensor, codOcorr, severidade, status;
+    char descricao[100];
+    
+    //codigo severidade status codigo_sensor codigo_bairro descricao 
+    while(fscanf(arq, "%d %d %d %d %d %s", &codOcorr, &severidade, &status, &codSensor, &codBairro, descricao) == 6) {
+        registrarOcorrencia(listaBairros, codBairro, codSensor, codOcorr, severidade, descricao);
+        Ocorrencia *o = buscarOcorrencia(listaBairros, codBairro, codSensor, codOcorr);
+
+        if(o != NULL){
+            o->status = status;
+        }
+    }
+    fclose(arq);
 }
 
 void removerBairro(Bairro **listaBairros, int codBairro){
