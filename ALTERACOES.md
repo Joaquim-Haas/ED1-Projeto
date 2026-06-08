@@ -1,6 +1,28 @@
 # Registro de Alterações
 
-## Resumo
+## Resumo (última atualização)
+
+Implementação do **menu interativo manual** (`menu.c`), escolha de modo no `main.c` (simulação ou menu), e funções auxiliares de compatibilidade em `operacoes.c` (`gerarChamado`, aliases de arquivo, `liberarChamados`/`liberarEquipes`).
+
+---
+
+## Menu interativo (novo)
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `source/menu.h` | Declarações de `exibirMenuInterativo`, `carregarDadosIniciais`, `salvarDadosNosArquivos` |
+| `source/menu.c` | Submenus para bairros, sensores, ocorrências, equipes/chamados e relatórios |
+
+### Fluxo do `main.c`
+1. Carrega todos os `.txt` ao iniciar
+2. Pergunta: `[1]` Simulação automática ou `[2]` Menu interativo
+3. Modo 1: executa `entrada_simulacao.txt`, verifica consistência e salva
+4. Modo 2: menu manual; opção `0` salva e encerra
+5. `liberarMemoriaGeral` ao final
+
+---
+
+## Resumo anterior
 
 Implementação completa do módulo **Simulador (Integrante 3)** e das funções faltantes de **Operações (Integrante 2)**, além de funções auxiliares em `urbano.c` e integração no `main.c`.
 
@@ -73,7 +95,7 @@ Implementação completa do módulo **Simulador (Integrante 3)** e das funções
 
 ```bash
 cd source
-gcc -Wall -Wextra -std=c99 -o cidade_inteligente main.c urbano.c operacoes.c simulador.c
+gcc -Wall -Wextra -std=c99 -o cidade_inteligente main.c urbano.c operacoes.c simulador.c menu.c
 ./cidade_inteligente
 ```
 

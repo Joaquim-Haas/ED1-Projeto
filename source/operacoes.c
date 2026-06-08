@@ -201,7 +201,7 @@ Chamado *buscarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int co
     return NULL;
 }
 
-void associarChamadoEquipe(Equipe *listaEquipes, int codChamado, int codEquipe, Chamado **listaChamadosGeral) {
+int associarChamadoEquipe(Equipe *listaEquipes, int codChamado, int codEquipe, Chamado **listaChamadosGeral) {
     // encontra o número chamado na lista global de chamadas não atribuídas.
     Chamado *aux = *listaChamadosGeral;
     Chamado *ant = NULL;
@@ -219,14 +219,14 @@ void associarChamadoEquipe(Equipe *listaEquipes, int codChamado, int codEquipe, 
         } else {
             printf("ERRO: Chamado [%d] nao encontrado na lista de chamados gerais.\n", codChamado);
         }
-        return;
+        return 0;
     }
 
     // busca equipe
     Equipe *eq = buscarEquipe(listaEquipes, codEquipe);
     if (eq == NULL) {
         printf("ERRO: Equipe [%d] nao existe. Nao foi possivel associar o chamado.\n", codEquipe);
-        return;
+        return 0;
     }
 
     // remove da lista global
@@ -257,9 +257,30 @@ void associarChamadoEquipe(Equipe *listaEquipes, int codChamado, int codEquipe, 
     }
 
     printf("Chamado [%d] associado com sucesso a Equipe [%s] (ID: %d).\n", codChamado, eq->nome, eq->codigo);
+    return 1;
 }
 
-void finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codChamado) {
+int gerarChamado(Chamado **listaChamadosGeral, Bairro *listaBairros, int codigo, int codOcorrencia, int prioridade, int status) {
+    Ocorrencia *ocorr = NULL;
+
+    if (buscarChamado(*listaChamadosGeral, NULL, codigo) != NULL) {
+        printf("ERRO: Ja existe um chamado cadastrado com o codigo [%d]. . .\n", codigo);
+        return 0;
+    }
+
+    if (codOcorrencia > 0) {
+        ocorr = buscarOcorrenciaPorCodigo(listaBairros, codOcorrencia);
+        if (ocorr == NULL) {
+            printf("ERRO: Ocorrencia [%d] nao encontrada.\n", codOcorrencia);
+            return 0;
+        }
+    }
+
+    cadastrarChamado(listaChamadosGeral, codigo, prioridade, status, ocorr);
+    return buscarChamado(*listaChamadosGeral, NULL, codigo) != NULL;
+}
+
+int finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codChamado) {
     // Encontre o item chamado (verificando ambas as listas)
     Chamado *chamadoAchado = NULL;
     Equipe *equipeDoChamado = NULL;
@@ -294,7 +315,7 @@ void finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int cod
 
     if (chamadoAchado == NULL) {
         printf("ERRO: Chamado [%d] nao encontrado.\n", codChamado);
-        return;
+        return 0;
     }
 
     // alterar o status para concluído/resolvido (3)
@@ -314,6 +335,8 @@ void finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int cod
     } else {
         printf("Chamado [%d] finalizado (nao estava associado a nenhuma equipe).\n", codChamado);
     }
+
+    return 1;
 }
 
 
@@ -601,32 +624,60 @@ void salvarChamados(char *nomeArquivo, Chamado *listaChamadosGeral, Equipe *list
     printf("Chamados salvos com sucesso em [%s].\n", nomeArquivo);
 }
 
-void liberarEquipesChamados(Equipe **listaEquipes, Chamado **listaChamadosGeral) {
-    if (listaChamadosGeral != NULL) {
-        Chamado *c = *listaChamadosGeral;
+void liberarChamados(Chamado **listaChamadosGeral) {
+    if (listaChamadosGeral == NULL || *listaChamadosGeral == NULL) {
+        return;
+    }
+
+    Chamado *c = *listaChamadosGeral;
+    while (c != NULL) {
+        Chamado *temp = c->prox;
+        free(c);
+        c = temp;
+    }
+    *listaChamadosGeral = NULL;
+}
+
+void liberarEquipes(Equipe **listaEquipes) {
+    if (listaEquipes == NULL || *listaEquipes == NULL) {
+        return;
+    }
+
+    Equipe *eq = *listaEquipes;
+    while (eq != NULL) {
+        Equipe *tempEq = eq->prox;
+        Chamado *c = eq->listaChamados;
         while (c != NULL) {
-            Chamado *temp = c->prox;
+            Chamado *tempC = c->prox;
             free(c);
-            c = temp;
+            c = tempC;
         }
-        *listaChamadosGeral = NULL;
+        free(eq);
+        eq = tempEq;
     }
-    if (listaEquipes != NULL) {
-        Equipe *eq = *listaEquipes;
-        while (eq != NULL) {
-            Equipe *tempEq = eq->prox;
-            Chamado *c = eq->listaChamados;
-            while (c != NULL) {
-                Chamado *tempC = c->prox;
-                free(c);
-                c = tempC;
-            }
-            free(eq);
-            eq = tempEq;
-        }
-        *listaEquipes = NULL;
-    }
+    *listaEquipes = NULL;
+}
+
+void liberarEquipesChamados(Equipe **listaEquipes, Chamado **listaChamadosGeral) {
+    liberarChamados(listaChamadosGeral);
+    liberarEquipes(listaEquipes);
     printf("Memoria de Equipes e Chamados totalmente liberada. . .\n");
+}
+
+void carregarEquipesArquivo(Equipe **listaEquipes) {
+    carregarEquipes("equipes.txt", listaEquipes);
+}
+
+void carregarChamadosArquivo(Chamado **listaChamadosGeral, Equipe *listaEquipes, Bairro *listaBairros) {
+    carregarChamados("chamados.txt", listaChamadosGeral, listaEquipes, listaBairros);
+}
+
+void salvarEquipesArquivo(Equipe *listaEquipes) {
+    salvarEquipes("equipes.txt", listaEquipes);
+}
+
+void salvarChamadosArquivo(Chamado *listaChamadosGeral, Equipe *listaEquipes) {
+    salvarChamados("chamados.txt", listaChamadosGeral, listaEquipes);
 }
 
 void relatorioBairrosMaisOcorrencias(Bairro *listaBairros) {

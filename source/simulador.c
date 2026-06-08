@@ -269,7 +269,7 @@ static int processarLinha(char *linha, Bairro **listaB, Equipe **listaE, Chamado
             return 0;
         }
 
-        if(associarEquipe(*listaC, listaE, atoi(tokenChamado), atoi(tokenEquipe))){
+        if(associarChamadoEquipe(*listaE, atoi(tokenChamado), atoi(tokenEquipe), listaC)){
             snprintf(bufferLog, sizeof(bufferLog), "associarEquipe %s %s", tokenChamado, tokenEquipe);
             registrarLog(bufferLog, "SUCESSO");
         }
@@ -400,35 +400,44 @@ void executarSimulacao(char *nomeArquivo, Bairro **listaB, Equipe **listaE, Cham
     fecharLog();
 }
 
+static void verificarChamadoConsistencia(Chamado *chamado, Bairro *listaB, Equipe *listaE, int *consistente, char *mensagem, size_t tamanhoMensagem) {
+    if (chamado == NULL) {
+        return;
+    }
+
+    if (chamado->ocorrencia != NULL && buscarOcorrenciaPorCodigo(listaB, chamado->ocorrencia->codigo) == NULL) {
+        snprintf(mensagem, tamanhoMensagem, "Chamado [%d] aponta para ocorrencia invalida [%d]",
+                 chamado->codigo, chamado->ocorrencia->codigo);
+        registrarLog(mensagem, "INCONSISTENCIA");
+        *consistente = 0;
+    }
+
+    if (chamado->equipe != NULL && buscarEquipe(listaE, chamado->equipe->codigo) == NULL) {
+        snprintf(mensagem, tamanhoMensagem, "Chamado [%d] associado a equipe invalida [%d]",
+                 chamado->codigo, chamado->equipe->codigo);
+        registrarLog(mensagem, "INCONSISTENCIA");
+        *consistente = 0;
+    }
+}
+
 int verificarConsistenciaDados(Bairro *listaB, Equipe *listaE, Chamado *listaC){
     int consistente = 1;
     char mensagem[256];
 
-    if(listaC != NULL){
-        Chamado *aux = listaC->prox;
+    Chamado *aux = listaC;
+    while (aux != NULL) {
+        verificarChamadoConsistencia(aux, listaB, listaE, &consistente, mensagem, sizeof(mensagem));
+        aux = aux->prox;
+    }
 
-        do{
-            if(aux->ocorrencia == NULL){
-                snprintf(mensagem, sizeof(mensagem), "Chamado [%d] sem ocorrencia vinculada", aux->codigo);
-                registrarLog(mensagem, "INCONSISTENCIA");
-                consistente = 0;
-            }
-            else if(buscarOcorrenciaPorCodigo(listaB, aux->ocorrencia->codigo) == NULL){
-                snprintf(mensagem, sizeof(mensagem), "Chamado [%d] aponta para ocorrencia invalida [%d]",
-                         aux->codigo, aux->ocorrencia->codigo);
-                registrarLog(mensagem, "INCONSISTENCIA");
-                consistente = 0;
-            }
-
-            if(aux->equipe != NULL && buscarEquipe(listaE, aux->equipe->codigo) == NULL){
-                snprintf(mensagem, sizeof(mensagem), "Chamado [%d] associado a equipe invalida [%d]",
-                         aux->codigo, aux->equipe->codigo);
-                registrarLog(mensagem, "INCONSISTENCIA");
-                consistente = 0;
-            }
-
+    Equipe *eq = listaE;
+    while (eq != NULL) {
+        aux = eq->listaChamados;
+        while (aux != NULL) {
+            verificarChamadoConsistencia(aux, listaB, listaE, &consistente, mensagem, sizeof(mensagem));
             aux = aux->prox;
-        }while(aux != listaC->prox);
+        }
+        eq = eq->prox;
     }
 
     if(consistente){

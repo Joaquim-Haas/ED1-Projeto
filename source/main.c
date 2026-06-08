@@ -1,31 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "urbano.h"
 #include "operacoes.h"
 #include "simulador.h"
+#include "menu.h"
 
-int main(void){
+int main(void) {
     Bairro *listaBairros = NULL;
     Equipe *listaEquipes = NULL;
     Chamado *listaChamados = NULL;
+    int modo;
 
-    carregarBairrosArquivo(&listaBairros);
-    carregarSensoresArquivo(listaBairros);
-    carregarOcorrenciasArquivo(listaBairros);
-    carregarEquipesArquivo(&listaEquipes);
-    carregarChamadosArquivo(&listaChamados, listaBairros);
+    carregarDadosIniciais(&listaBairros, &listaEquipes, &listaChamados);
 
-    executarSimulacao("entrada_simulacao.txt", &listaBairros, &listaEquipes, &listaChamados);
+    printf("=========================================\n");
+    printf("       SISTEMA DE MONITORAMENTO URBANO   \n");
+    printf("=========================================\n");
+    printf("Escolha o modo de operacao:\n");
+    printf("[1] Modo Simulacao Automatica (entrada_simulacao.txt)\n");
+    printf("[2] Modo Menu Interativo (Manual)\n");
+    printf("Opcao: ");
+    scanf("%d", &modo);
 
-    verificarConsistenciaDados(listaBairros, listaEquipes, listaChamados);
-
-    salvarBairrosArquivo(listaBairros);
-    salvarSensoresArquivo(listaBairros);
-    salvarOcorrenciasArquivo(listaBairros);
-    salvarEquipesArquivo(listaEquipes);
-    salvarChamadosArquivo(listaChamados);
+    if (modo == 1) {
+        printf("\nIniciando interpretador de arquivos...\n");
+        executarSimulacao("entrada_simulacao.txt", &listaBairros, &listaEquipes, &listaChamados);
+        verificarConsistenciaDados(listaBairros, listaEquipes, listaChamados);
+        salvarDadosNosArquivos(listaBairros, listaEquipes, listaChamados);
+    } else if (modo == 2) {
+        exibirMenuInterativo(&listaBairros, &listaEquipes, &listaChamados);
+    } else {
+        printf("Opcao invalida. Encerrando programa.\n");
+    }
 
     liberarMemoriaGeral(&listaBairros, &listaEquipes, &listaChamados);
 

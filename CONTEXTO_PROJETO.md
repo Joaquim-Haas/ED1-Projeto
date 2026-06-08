@@ -7,7 +7,8 @@ Projeto da disciplina **Estrutura de Dados 1 (UTFPR)** em linguagem C, simulando
 ```
 ED1-Projeto/
 ├── source/                    # Código-fonte principal do sistema
-│   ├── main.c                 # Ponto de entrada: carrega dados, executa simulação, libera memória
+│   ├── main.c                 # Ponto de entrada: escolhe modo (simulação ou menu), libera memória
+│   ├── menu.h / menu.c        # Menu interativo manual e funções de carga/salvamento agrupadas
 │   ├── urbano.h / urbano.c    # Integrante 1 — Bairros, Sensores, Ocorrências
 │   ├── operacoes.h / operacoes.c  # Integrante 2 — Equipes e Chamados
 │   ├── simulador.h / simulador.c  # Integrante 3 — Interpretador, log e liberação geral
@@ -26,7 +27,8 @@ ED1-Projeto/
 | Urbano | `urbano.c` | Cadastro e gestão de bairros, sensores e ocorrências |
 | Operações | `operacoes.c` | Equipes, chamados, associação e relatório |
 | Simulador | `simulador.c` | Lê `entrada_simulacao.txt`, grava `log_execucao.txt`, libera memória |
-| Main | `main.c` | Orquestra carregamento, simulação, verificação e persistência |
+| Main | `main.c` | Escolhe modo de operação e orquestra o fluxo geral |
+| Menu | `menu.c` | Submenus para CRUD manual, relatórios e persistência ao sair |
 
 ## Hierarquia de dados
 
@@ -71,7 +73,7 @@ Chamado (lista circular global) → aponta para Ocorrencia e Equipe
 Executar dentro da pasta `source/`:
 
 ```bash
-gcc -Wall -Wextra -std=c99 -o cidade_inteligente main.c urbano.c operacoes.c simulador.c
+gcc -Wall -Wextra -std=c99 -o cidade_inteligente main.c urbano.c operacoes.c simulador.c menu.c
 ./cidade_inteligente
 ```
 
