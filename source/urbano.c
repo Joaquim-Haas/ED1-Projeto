@@ -74,11 +74,11 @@ void cadastrarBairro(Bairro **lista, int codBairro, char *Nome){
     }
 
     if(*lista == NULL){
-        novo->prox = novo;  //novo->prox aponta para si mesmo
+        novo->prox = novo;
         *lista = novo;  
     }                               
-    else{                            //novo->prox = (*lista)->prox; o novo aponta para o atual primeiro
-        novo->prox = (*lista)->prox; //(*lista)->prox = novo; o ultimo aponta para o novo que vira o primeiro
+    else{
+        novo->prox = (*lista)->prox;
         (*lista)->prox = novo;       
     }
 
@@ -478,8 +478,8 @@ void removerBairro(Bairro **listaBairros, int codBairro){
         *listaBairros = NULL; //unico elemento da lista
     }
     else{
-        ant->prox = aux->prox; //ant aponta para o seguinte de aux
-        if(aux == *listaBairros){ //se aux for o ultimo elemento
+        ant->prox = aux->prox;
+        if(aux == *listaBairros){ 
             *listaBairros = ant;
         }
     }
