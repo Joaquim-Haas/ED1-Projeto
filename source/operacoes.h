@@ -37,7 +37,7 @@ int associarChamadoEquipe(Equipe *listaEquipes, int codChamado, int codEquipe, C
 int finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codChamado);
 int gerarChamado(Chamado **listaChamadosGeral, Bairro *listaBairros, int codigo, int codOcorrencia, int prioridade, int status);
 
-//Regra automarica
+//Regra automatica
 void verificarGeracaoAutomatica(Bairro *listaBairros, Equipe *listaEquipes, Chamado **listaChamadosGeral, Sensor *sensor, Ocorrencia *ocorrencia);
 
 // arquivo I/O
