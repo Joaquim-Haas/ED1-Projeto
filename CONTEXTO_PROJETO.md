@@ -7,7 +7,8 @@ Projeto da disciplina **Estrutura de Dados 1 (UTFPR)** em linguagem C, simulando
 ```
 ED1-Projeto/
 ├── source/                    # Código-fonte principal do sistema
-│   ├── main.c                 # Ponto de entrada: escolhe modo (simulação ou menu), libera memória
+│   ├── main.c                 # Ponto de entrada completo: simulação OU menu (escolha no início)
+│   ├── cidade_inteligente.c   # Ponto de entrada só do menu interativo
 │   ├── menu.h / menu.c        # Menu interativo manual e funções de carga/salvamento agrupadas
 │   ├── urbano.h / urbano.c    # Integrante 1 — Bairros, Sensores, Ocorrências
 │   ├── operacoes.h / operacoes.c  # Integrante 2 — Equipes e Chamados
@@ -73,8 +74,13 @@ Chamado (lista circular global) → aponta para Ocorrencia e Equipe
 Executar dentro da pasta `source/`:
 
 ```bash
-gcc -Wall -Wextra -std=c99 -o cidade_inteligente main.c urbano.c operacoes.c simulador.c menu.c
+# Menu interativo apenas:
+gcc -Wall -Wextra -std=c99 -o cidade_inteligente cidade_inteligente.c urbano.c operacoes.c simulador.c menu.c
 ./cidade_inteligente
+
+# Simulação + menu (escolhe no início):
+gcc -Wall -Wextra -std=c99 -o programa_teste main.c urbano.c operacoes.c simulador.c menu.c
+./programa_teste
 ```
 
 ## Campo não utilizado (opcional)
