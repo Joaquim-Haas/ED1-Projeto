@@ -23,21 +23,38 @@ typedef struct equipe{
     struct equipe *prox;
 }Equipe;
 
+// Equipe CRUD
 void cadastrarEquipe(Equipe **topo, int id, char *nome, char *especialidade);
-int gerarChamado(Chamado **listaChamados, Bairro *listaBairros, int codChamado, int codOcorrencia, int prioridade, int status);
-int associarEquipe(Chamado *listaChamados, Equipe **listaEquipes, int codChamado, int codEquipe);
-int finalizarChamado(Chamado *listaChamados, Equipe *listaEquipes, int codChamado);
-void relatorioGeral(Bairro *listaBairros, Equipe *listaEquipes, Chamado *listaChamados);
+Equipe *buscarEquipe(Equipe *listaEquipes, int codigo);
+void listarEquipes(Equipe *listaEquipes);
+void removerEquipe(Equipe **listaEquipes, int codigo);
 
-Equipe *buscarEquipe(Equipe *listaEquipes, int codEquipe);
-Chamado *buscarChamado(Chamado *listaChamados, int codChamado);
+// Chamado CRUD
+Chamado *alocarChamado(int codigo, int prioridade, int status, Ocorrencia *ocorrencia);
+void cadastrarChamado(Chamado **listaChamadosGeral, int codigo, int prioridade, int status, Ocorrencia *ocorrencia);
+Chamado *buscarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codigo);
+void associarChamadoEquipe(Equipe *listaEquipes, int codChamado, int codEquipe, Chamado **listaChamadosGeral);
+void finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codChamado);
 
-void carregarEquipesArquivo(Equipe **listaEquipes);
-void carregarChamadosArquivo(Chamado **listaChamados, Bairro *listaBairros);
-void salvarEquipesArquivo(Equipe *listaEquipes);
-void salvarChamadosArquivo(Chamado *listaChamados);
+//Regra automarica
+void verificarGeracaoAutomatica(Bairro *listaBairros, Equipe *listaEquipes, Chamado **listaChamadosGeral, Sensor *sensor, Ocorrencia *ocorrencia);
 
-void liberarEquipes(Equipe **listaEquipes);
-void liberarChamados(Chamado **listaChamados);
+// arquivo I/O
+void carregarEquipes(char *nomeArquivo, Equipe **listaEquipes);
+void carregarChamados(char *nomeArquivo, Chamado **listaChamadosGeral, Equipe *listaEquipes, Bairro *listaBairros);
+void salvarEquipes(char *nomeArquivo, Equipe *listaEquipes);
+void salvarChamados(char *nomeArquivo, Chamado *listaChamadosGeral, Equipe *listaEquipes);
+
+// limpar
+void liberarEquipesChamados(Equipe **listaEquipes, Chamado **listaChamadosGeral);
+
+// relatorios
+void relatorioBairrosMaisOcorrencias(Bairro *listaBairros);
+void relatorioSensoresOffline(Bairro *listaBairros);
+void relatorioOcorrenciasCriticasAbertas(Bairro *listaBairros);
+void relatorioEquipeMaisAtendimentos(Equipe *listaEquipes);
+void relatorioQuantidadeSensoresBairro(Bairro *listaBairros);
+void relatorioOcorrenciasPorSeveridade(Bairro *listaBairros);
+void relatorioGeral(Bairro *listaBairros, Equipe *listaEquipes, Chamado *listaChamadosGeral);
 
 #endif
