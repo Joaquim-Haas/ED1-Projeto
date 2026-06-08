@@ -12,7 +12,7 @@ int main(void) {
     Chamado *listaChamados = NULL;
     int modo;
 
-    carregarDadosIniciais(&listaBairros, &listaEquipes, &listaChamados);
+    //carregarDadosIniciais(&listaBairros, &listaEquipes, &listaChamados);
 
     printf("=========================================\n");
     printf("       SISTEMA DE MONITORAMENTO URBANO   \n");

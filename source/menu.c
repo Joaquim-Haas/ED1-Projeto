@@ -300,6 +300,7 @@ void exibirMenuInterativo(Bairro **listaB, Equipe **listaE, Chamado **listaC) {
         printf("3. Registrar Ocorrencia Manual\n");
         printf("4. Gerenciar Equipes e Chamados\n");
         printf("5. Visualizar Relatorios no Terminal\n");
+        printf("6. Inserir dados de arquivos.txt\n");
         printf("0. Salvar e Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
@@ -320,6 +321,12 @@ void exibirMenuInterativo(Bairro **listaB, Equipe **listaE, Chamado **listaC) {
                 break;
             case 5:
                 menuRelatorios(*listaB, *listaE, *listaC);
+                break;
+            case 6:
+                printf("\n--- Carregando dados dos arquivos .txt ---\n");
+                carregarDadosIniciais(listaB, listaE, listaC); 
+                printf("\nDados carregados com sucesso!\n");
+                pausar(); 
                 break;
             case 0:
                 printf("Salvando dados e encerrando...\n");
