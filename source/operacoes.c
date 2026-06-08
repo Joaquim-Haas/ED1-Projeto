@@ -46,10 +46,7 @@ static Sensor *buscarSensorPorOcorrencia(Bairro *listaBairros, Ocorrencia *ocorr
     return NULL;
 }
 
-// ==========================================
-//             equipe crud
-// ==========================================
-
+//  equipe crud
 void cadastrarEquipe(Equipe **topo, int id, char *nome, char *especialidade) {
     if (buscarEquipe(*topo, id) != NULL) {
         printf("ERRO: Ja existe uma equipe cadastrada com o codigo [%d]. . .\n", id);
@@ -140,10 +137,7 @@ void removerEquipe(Equipe **listaEquipes, int codigo) {
     free(aux);
 }
 
-// ==========================================
-//             CHAMADO CRUD
-// ==========================================
-
+//             Chamado crud
 Chamado *alocarChamado(int codigo, int prioridade, int status, Ocorrencia *ocorrencia) {
     Chamado *novo = (Chamado *)malloc(sizeof(Chamado));
     if (novo == NULL) {
@@ -168,7 +162,7 @@ void cadastrarChamado(Chamado **listaChamadosGeral, int codigo, int prioridade, 
     Chamado *novo = alocarChamado(codigo, prioridade, status, ocorrencia);
     if (novo == NULL) return;
 
-    // lista encadeada: insere fim
+    //insere fim
     if (*listaChamadosGeral == NULL) {
         *listaChamadosGeral = novo;
     } else {
@@ -182,13 +176,13 @@ void cadastrarChamado(Chamado **listaChamadosGeral, int codigo, int prioridade, 
 }
 
 Chamado *buscarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codigo) {
-    // 1-> busca no lista global de não atribuidos
+    // busca na lista de não atribuidos
     Chamado *aux = listaChamadosGeral;
     while (aux != NULL) {
         if (aux->codigo == codigo) return aux;
         aux = aux->prox;
     }
-    // 2-> buscar em todas as listas de equipes
+    // busca em todas as listas de equipes
     Equipe *eq = listaEquipes;
     while (eq != NULL) {
         aux = eq->listaChamados;
@@ -229,7 +223,7 @@ int associarChamadoEquipe(Equipe *listaEquipes, int codChamado, int codEquipe, C
         return 0;
     }
 
-    // remove da lista global
+    // remove da lista
     if (ant == NULL) {
         *listaChamadosGeral = aux->prox;
     } else {
@@ -295,7 +289,7 @@ int finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codC
         aux = aux->prox;
     }
 
-    // caso não encontre, procure em equipes.
+    // caso não encontre, procura em equipes.
     if (chamadoAchado == NULL) {
         Equipe *eq = listaEquipes;
         while (eq != NULL) {
@@ -321,7 +315,7 @@ int finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codC
     // alterar o status para concluído/resolvido (3)
     chamadoAchado->status = 3;
 
-    // atualizar ocorrência associada para finalizada (3)
+    // atualiza ocorrência associada para finalizada
     if (chamadoAchado->ocorrencia != NULL) {
         chamadoAchado->ocorrencia->status = 3;
         printf("Ocorrencia [%d] finalizada.\n", chamadoAchado->ocorrencia->codigo);
@@ -341,7 +335,7 @@ int finalizarChamado(Chamado *listaChamadosGeral, Equipe *listaEquipes, int codC
 
 
 void verificarGeracaoAutomatica(Bairro *listaBairros, Equipe *listaEquipes, Chamado **listaChamadosGeral, Sensor *sensor, Ocorrencia *ocorrencia) {
-    // Caso 1: O sensor fica OFFLINE (status != 1)
+    // Caso 1: O sensor fica OFFLINE
     if (sensor != NULL && sensor->status != 1) {
         int jaTemChamado = 0;
         // pesquisa em chamadas nao atribuidas
@@ -353,7 +347,7 @@ void verificarGeracaoAutomatica(Bairro *listaBairros, Equipe *listaEquipes, Cham
             }
             c = c->prox;
         }
-        // pesquisar nas chamadas do Teams
+        // pesquisa nas chamadas dos times
         if (!jaTemChamado) {
             Equipe *eq = listaEquipes;
             while (eq != NULL) {
@@ -398,7 +392,7 @@ void verificarGeracaoAutomatica(Bairro *listaBairros, Equipe *listaEquipes, Cham
                     printf("[AUTOMATICO] Sensor [%d] offline! Chamado [%d] gerado automaticamente e associado a Equipe [%s].\n",
                            sensor->codigo, novoCod, match->nome);
                 } else {
-                    // adicionar à lista global
+                    // adicionar à lista
                     if (*listaChamadosGeral == NULL) {
                         *listaChamadosGeral = novo;
                     } else {
@@ -415,7 +409,7 @@ void verificarGeracaoAutomatica(Bairro *listaBairros, Equipe *listaEquipes, Cham
         }
     }
 
-    // ocorrencia crítica registrada (gravidade >= 4)
+    // ocorrencia crítica registrada
     if (ocorrencia != NULL && ocorrencia->severidade >= 4 && ocorrencia->status == 1) {
         // encontre o sensor correspondente para obter seu tipo.
         Sensor *sens = buscarSensorPorOcorrencia(listaBairros, ocorrencia);
@@ -519,7 +513,7 @@ void carregarChamados(char *nomeArquivo, Chamado **listaChamadosGeral, Equipe *l
     int codigo_chamado, codigo_ocorrencia, prioridade, status, codigo_equipe;
     int count = 0;
     while (fscanf(arq, "%d %d %d %d %d", &codigo_chamado, &codigo_ocorrencia, &prioridade, &status, &codigo_equipe) == 5) {
-        // busca occurrence
+        // busca ocorrência
         Ocorrencia *ocorr = NULL;
         if (listaBairros != NULL && codigo_ocorrencia > 0) {
             Bairro *auxB = listaBairros->prox;
@@ -749,7 +743,7 @@ void relatorioSensoresOffline(Bairro *listaBairros) {
         if (aux->listaSensores != NULL) {
             Sensor *s = aux->listaSensores->prox;
             do {
-                if (s->status != 1) { // status != 1 means OFFLINE
+                if (s->status != 1) { // status != 1 é para offline
                     printf("Bairro: [%s] - Sensor ID: [%d] - Tipo: [%d] - Status: [%d] (OFFLINE)\n",
                            aux->nome, s->codigo, s->tipo, s->status);
                     encontrou = 1;
