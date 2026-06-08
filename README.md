@@ -17,3 +17,5 @@ Você pode baixar o código fonte ou clonar o repositório:
 ```bash
 git clone https://github.com/Joaquim-Haas/ED1-Projeto.git
 ```
+### Para compilar o código deve usar os comando
+./cidade_inteligente
