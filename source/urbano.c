@@ -249,7 +249,6 @@ Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor,
     }while(aux != sensorAchado->listaOcorrencias->prox);
 
     return NULL;
-=======
 }
 
 Ocorrencia *buscarOcorrenciaPorCodigo(Bairro *listaBairros, int codOcorrencia){
