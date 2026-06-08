@@ -43,6 +43,9 @@ void listarOcorrencias(Sensor *sensorEspecif); //ok
 Bairro *buscarBairro(Bairro *listaBairros, int codBairro); //ok
 Sensor *buscarSensor(Bairro *listaBairros, int codBairro, int codSensor); //ok
 Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor, int codOcorrencia); //ok
+Ocorrencia *buscarOcorrenciaPorCodigo(Bairro *listaBairros, int codOcorrencia);
+
+int alterarStatusSensor(Bairro *listaBairros, int codSensor, int codBairro, int novoStatus);
 
 void salvarBairrosArquivo(Bairro *listaBairros);
 void salvarSensoresArquivo(Bairro *listaBairros);

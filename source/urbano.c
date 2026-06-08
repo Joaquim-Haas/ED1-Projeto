@@ -251,6 +251,50 @@ Ocorrencia *buscarOcorrencia(Bairro *listaBairros, int codBairro, int codSensor,
     return NULL;
 }
 
+Ocorrencia *buscarOcorrenciaPorCodigo(Bairro *listaBairros, int codOcorrencia){
+    if(listaBairros == NULL){
+        return NULL;
+    }
+
+    Bairro *auxBairro = listaBairros->prox;
+
+    do{
+        if(auxBairro->listaSensores != NULL){
+            Sensor *auxSensor = auxBairro->listaSensores->prox;
+
+            do{
+                if(auxSensor->listaOcorrencias != NULL){
+                    Ocorrencia *auxOcorr = auxSensor->listaOcorrencias->prox;
+
+                    do{
+                        if(auxOcorr->codigo == codOcorrencia){
+                            return auxOcorr;
+                        }
+                        auxOcorr = auxOcorr->prox;
+                    }while(auxOcorr != auxSensor->listaOcorrencias->prox);
+                }
+                auxSensor = auxSensor->prox;
+            }while(auxSensor != auxBairro->listaSensores->prox);
+        }
+        auxBairro = auxBairro->prox;
+    }while(auxBairro != listaBairros->prox);
+
+    return NULL;
+}
+
+int alterarStatusSensor(Bairro *listaBairros, int codSensor, int codBairro, int novoStatus){
+    Sensor *sensor = buscarSensor(listaBairros, codBairro, codSensor);
+
+    if(sensor == NULL){
+        printf("ERRO: Sensor [%d] nao encontrado no bairro [%d]. . .\n", codSensor, codBairro);
+        return 0;
+    }
+
+    sensor->status = novoStatus;
+    printf("Status do sensor [%d] alterado para [%d]. . .\n", codSensor, novoStatus);
+    return 1;
+}
+
 void salvarBairrosArquivo(Bairro *listaBairros){
     if(listaBairros == NULL){
         printf("Lista de bairros vazia, nada foi salvo em bairros.txt. . .\n");
