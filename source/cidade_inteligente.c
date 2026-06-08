@@ -1,12 +1,3 @@
-/*
- * Ponto de entrada do modo Menu Interativo.
- * Compilar na pasta source/:
- *   gcc -Wall -Wextra -std=c99 -o cidade_inteligente cidade_inteligente.c urbano.c operacoes.c simulador.c menu.c
- * Executar:
- *   ./cidade_inteligente        (Linux)
- *   cidade_inteligente.exe      (Windows)
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 
